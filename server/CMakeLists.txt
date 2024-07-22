@@ -4,8 +4,8 @@ project(server)
 set(CMAKE_CXX_STANDARD 17)
 
 set (SRCS 
-    Server.cpp
-    main.cpp
+    src/Server.cpp
+    src/main.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SRCS})

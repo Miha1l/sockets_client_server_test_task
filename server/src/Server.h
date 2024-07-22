@@ -18,10 +18,11 @@ private:
     int port;
     struct sockaddr_in address;
     int buf;
+
 public:
     Server(int port = 8080);
     ~Server();
     void start();
-    void getMessage();
+    void getData();
     void processingData(const int& sum);
 };

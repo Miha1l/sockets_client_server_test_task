@@ -47,6 +47,7 @@ void Client::readData() {
 
         std::unique_lock<std::mutex> locker(m);
         buffer.push(data);
+        locker.unlock();
         cond_var.notify_one();
     }
 }
@@ -78,7 +79,7 @@ void Client::start() {
 }
 
 void Client::sendData(int& value) {
-    while(true) {
+    while(1) {
         auto sendBytes = send(sock, &value, sizeof(value), MSG_NOSIGNAL);
         if (errno == 32) {
             close(sock);

@@ -9,7 +9,7 @@
 class Handler {
 public:
     Handler();
-    bool check(std::string& data);
+    bool check(const std::string& data);
     void process(std::string& data);
-    int getSum(std::string& data);
+    int getSum(const std::string& data);
 };

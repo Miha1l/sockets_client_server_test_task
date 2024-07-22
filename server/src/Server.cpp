@@ -29,12 +29,12 @@ Server::~Server() {
 
 void Server::start() {
     while(1) {
-        getMessage();
+        getData();
     }
 }
 
-void Server::getMessage() {
-    int fd = accept(sock, NULL, NULL);
+void Server::getData() {
+    auto fd = accept(sock, NULL, NULL);
     if (fd == -1) {
         perror("Accept failed");
         exit(EXIT_FAILURE);
@@ -43,11 +43,11 @@ void Server::getMessage() {
     std::cout << "Client connected\n";
     
     while (1) {
-        int bytesRead = recv(fd, &buf, sizeof(buf), 0);
+        auto bytesRead = recv(fd, &buf, sizeof(buf), 0);
         if (bytesRead <= 0) {
             break;
         }
-        // std::string message(buf);
+
         processingData(buf);
     }
 

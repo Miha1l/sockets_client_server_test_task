@@ -23,7 +23,7 @@ cmake -S . -B build
 cmake --build ./build
 ```
 
-Для запуска использовать команду ```./build/client``` или ```./build/server```
+Для запуска клиента использовать команду ```./build/client```, для запуска сервера - ```./build/server```
 
 ### На будущее
 

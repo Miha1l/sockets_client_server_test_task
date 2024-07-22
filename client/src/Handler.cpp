@@ -6,7 +6,7 @@ Handler::Handler() {
 
 }
 
-bool Handler::check(std::string& data) {
+bool Handler::check(const std::string& data) {
     if (data.length() > MAX_STR_LEN || data.empty()) {
         return false;
     }
@@ -28,9 +28,9 @@ void Handler::process(std::string& data) {
     data = std::regex_replace(data, std::regex(PATTERN), REPLACE);
 }
 
-int Handler::getSum(std::string &data) {
+int Handler::getSum(const std::string& data) {
     auto sum = 0;
-    for (auto& sym: data) {
+    for (const auto& sym: data) {
         if (!std::isdigit(sym)) {
             continue;
         }

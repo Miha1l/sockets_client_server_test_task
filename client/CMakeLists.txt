@@ -4,9 +4,9 @@ project(client)
 set(CMAKE_CXX_STANDARD 17)
 
 set (SRCS 
-    main.cpp
-    Client.cpp
-    Handler.cpp
+    src/main.cpp
+    src/Client.cpp
+    src/Handler.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SRCS})
