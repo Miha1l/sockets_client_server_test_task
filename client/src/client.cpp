@@ -1,4 +1,14 @@
-#include "Client.h"
+#include <regex>
+#include <iostream>
+#include <chrono>
+#include <thread>
+
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
+#include "client.h"
 
 Client::Client(std::string ip, int port) : ip(ip), port(port) {
     address.sin_family = AF_INET;
@@ -6,10 +16,10 @@ Client::Client(std::string ip, int port) : ip(ip), port(port) {
 
     auto res = inet_pton(AF_INET, ip.c_str(), &address.sin_addr);
     if (res == 0) {
-        std::perror("inet_pton failed: not a valid network address\n");
+        perror("inet_pton failed: not a valid network address\n");
         exit(EXIT_FAILURE);
     } else if (res == -1) {
-        std::perror("inet_pton failed");
+        perror("inet_pton failed");
         exit(EXIT_FAILURE);
     }
 
@@ -24,7 +34,7 @@ void Client::connectToServer() {
     sock = socket(AF_INET, SOCK_STREAM, 0);
     
     if (sock < 0) {
-        std::perror("Error opening socket");
+        perror("Error opening socket");
         exit(EXIT_FAILURE);
     }
 
@@ -38,7 +48,7 @@ void Client::connectToServer() {
 void Client::readData() {
     while (1) { 
         std::string data;
-        getline(std::cin, data);
+        std::getline(std::cin, data);
 
         if (!handler.check(data)) {
             std::cout << "String is incorrect\n";
@@ -80,14 +90,14 @@ void Client::start() {
 
 void Client::sendData(int& value) {
     while(1) {
-        auto sendBytes = send(sock, &value, sizeof(value), MSG_NOSIGNAL);
-        if (errno == 32) {
+        auto send_bytes = send(sock, &value, sizeof(value), MSG_NOSIGNAL);
+        if (errno == 32) { // Заменить макросом ошибки
             close(sock);
             connectToServer();
             continue;
         }
         
-        if (sendBytes == -1) {
+        if (send_bytes == -1) {
             continue;
         }
 

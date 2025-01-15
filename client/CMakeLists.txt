@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 set (SRCS 
     src/main.cpp
-    src/Client.cpp
-    src/Handler.cpp
+    src/client.cpp
+    src/handler.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SRCS})
