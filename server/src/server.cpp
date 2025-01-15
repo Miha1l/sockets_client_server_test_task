@@ -1,10 +1,17 @@
-#include "Server.h"
+#include <iostream>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+
+#include "server.h"
 
 Server::Server(int port) : port(port) {
     sock = socket(AF_INET, SOCK_STREAM, 0);
 
     if (sock == -1) {
-        std::perror("Opening socket failed");
+        perror("Opening socket failed");
         exit(EXIT_FAILURE);
     }
 
@@ -43,8 +50,8 @@ void Server::getData() {
     std::cout << "Client connected\n";
     
     while (1) {
-        auto bytesRead = recv(fd, &buf, sizeof(buf), 0);
-        if (bytesRead <= 0) {
+        auto bytes_read = recv(fd, &buf, sizeof(buf), 0);
+        if (bytes_read <= 0) {
             break;
         }
 
