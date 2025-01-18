@@ -1,5 +1,5 @@
-#include <regex>
-#include <algorithm>
+#include <cctype>
+#include <unordered_map>
 
 #include "handler.h"
 
@@ -7,13 +7,13 @@ Handler::Handler() {
 
 }
 
-bool Handler::check(const std::string& data) {
+bool Handler::check(const std::string& data) const {
     if (data.length() > MAX_STR_LEN || data.empty()) {
         return false;
     }
 
-    for (const auto& sym: data) {
-        if (!std::isdigit(sym)) {
+    for (const auto &sym: data) {
+        if (!std::isalpha(sym)) {
             return false;
         }
     }
@@ -21,21 +21,16 @@ bool Handler::check(const std::string& data) {
     return true;
 }
 
-void Handler::process(std::string& data) {
-    std::sort(data.begin(), data.end(), [](const auto& a, const auto& b) {
-        return a > b;
-    });
-
-    data = std::regex_replace(data, std::regex(PATTERN), REPLACE);
-}
-
-int Handler::getSum(const std::string& data) {
-    auto sum = 0;
-    for (const auto& sym: data) {
-        if (!std::isdigit(sym)) {
-            continue;
-        }
-        sum += sym - '0';
+std::string Handler::process(const std::string& data) const {
+    std::unordered_map<char, int> symbols_count;
+    for (const auto &sym: data) {
+        symbols_count[sym]++;
     }
-    return sum;
+
+    std::string res;
+    for (const auto &[key, val] : symbols_count) {
+        res = res + key + ':' + std::to_string(val) + '\n';
+    }
+
+    return res;
 }

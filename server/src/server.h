@@ -1,8 +1,10 @@
 #pragma once
 
+#include <string>
+
 #include <netinet/in.h>
 
-#define MULTIPLICITY 32
+#define BUFFER_SIZE 100
 
 class Server {
 public:
@@ -11,12 +13,11 @@ public:
     
     void start();
     void getData();
-    void processingData(const int& sum);
+    void processingData(const std::string &s);
 
 private:
     int sock;
     int port;
     struct sockaddr_in address;
-    int buf;
-
+    char buf[BUFFER_SIZE];
 };

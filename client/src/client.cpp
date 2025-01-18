@@ -1,12 +1,13 @@
-#include <regex>
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <cerrno>
 
-#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #include "client.h"
 
@@ -16,10 +17,10 @@ Client::Client(std::string ip, int port) : ip(ip), port(port) {
 
     auto res = inet_pton(AF_INET, ip.c_str(), &address.sin_addr);
     if (res == 0) {
-        perror("inet_pton failed: not a valid network address\n");
+        // perror("inet_pton");
         exit(EXIT_FAILURE);
     } else if (res == -1) {
-        perror("inet_pton failed");
+        perror("inet_pton");
         exit(EXIT_FAILURE);
     }
 
@@ -34,7 +35,7 @@ void Client::connectToServer() {
     sock = socket(AF_INET, SOCK_STREAM, 0);
     
     if (sock < 0) {
-        perror("Error opening socket");
+        perror("socket");
         exit(EXIT_FAILURE);
     }
 
@@ -69,14 +70,15 @@ void Client::processingData() {
             return buffer.size();
         });
 
-        auto message = buffer.front();
-        handler.process(message);
-        std::cout << "Transformed message: " << message << '\n';
+        const auto data = buffer.front();
+        
+        auto result_str = handler.process(data);
+        std::cout << "Processed data:\n" << result_str;
 
-        auto sum = handler.getSum(message);
         buffer.pop();
         locker.unlock();
-        sendData(sum);
+
+        sendData(result_str);
     }
 }
 
@@ -88,19 +90,20 @@ void Client::start() {
     t2.join();
 }
 
-void Client::sendData(int& value) {
+void Client::sendData(const std::string &value) {
     while(1) {
-        auto send_bytes = send(sock, &value, sizeof(value), MSG_NOSIGNAL);
-        if (errno == 32) { // Заменить макросом ошибки
+        auto send_bytes = send(sock, value.c_str(), value.size() + 1, MSG_NOSIGNAL);
+
+        if (errno == EPIPE) {
             close(sock);
             connectToServer();
             continue;
         }
-        
+
         if (send_bytes == -1) {
             continue;
         }
-
+        
         break;
     }
 

@@ -18,7 +18,7 @@ public:
     void readData();
     void processingData();
     void start();
-    void sendData(int& value);
+    void sendData(const std::string &value);
 
 private:
     std::string ip;
