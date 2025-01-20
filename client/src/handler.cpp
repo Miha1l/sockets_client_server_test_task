@@ -1,5 +1,6 @@
 #include <cctype>
 #include <unordered_map>
+#include <algorithm>
 
 #include "handler.h"
 
@@ -12,13 +13,9 @@ bool Handler::check(const std::string& data) const {
         return false;
     }
 
-    for (const auto &sym: data) {
-        if (!std::isalpha(sym)) {
-            return false;
-        }
-    }
-
-    return true;
+    return std::all_of(data.begin(), data.end(), [](const auto &elem) {
+        return std::isalpha(elem);
+    });
 }
 
 std::string Handler::process(const std::string& data) const {

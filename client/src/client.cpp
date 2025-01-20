@@ -17,7 +17,7 @@ Client::Client(std::string ip, int port) : ip(ip), port(port) {
 
     auto res = inet_pton(AF_INET, ip.c_str(), &address.sin_addr);
     if (res == 0) {
-        // perror("inet_pton");
+        std::cout << "Not valid address\n";
         exit(EXIT_FAILURE);
     } else if (res == -1) {
         perror("inet_pton");
@@ -56,8 +56,9 @@ void Client::readData() {
             continue;
         }
 
+        auto result_str = handler.process(data);
         std::unique_lock<std::mutex> locker(m);
-        buffer.push(data);
+        buffer = result_str;
         locker.unlock();
         cond_var.notify_one();
     }
@@ -70,15 +71,13 @@ void Client::processingData() {
             return buffer.size();
         });
 
-        const auto data = buffer.front();
-        
-        auto result_str = handler.process(data);
-        std::cout << "Processed data:\n" << result_str;
+        std::cout << "Processed data:\n" << buffer;
 
-        buffer.pop();
+        sendData(buffer);
+        buffer.clear();
+
         locker.unlock();
-
-        sendData(result_str);
+        cond_var.notify_one();
     }
 }
 
@@ -90,9 +89,9 @@ void Client::start() {
     t2.join();
 }
 
-void Client::sendData(const std::string &value) {
+void Client::sendData(const std::string &data) {
     while(1) {
-        auto send_bytes = send(sock, value.c_str(), value.size() + 1, MSG_NOSIGNAL);
+        auto send_bytes = send(sock, data.c_str(), data.size() + 1, MSG_NOSIGNAL);
 
         if (errno == EPIPE) {
             close(sock);

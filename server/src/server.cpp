@@ -67,19 +67,19 @@ void Server::getData() {
 }
 
 void Server::processingData(const std::string &s) {
-    std::vector<std::pair<char, int>> pairs;
+    std::vector<std::pair<char, int>> count_symbols;
     for (int i = 0; i < s.size(); ) {
         auto pos = s.find('\n', i);
-        pairs.push_back({s[i], std::stoi(s.substr(i + 2, pos - i - 2))});
+        count_symbols.push_back({ s[i], std::stoi(s.substr(i + 2, pos - i - 2)) });
         i = pos + 1;
     }
 
-    std::sort(pairs.begin(), pairs.end(), [](const auto &a, const auto &b) {
+    std::sort(count_symbols.begin(), count_symbols.end(), [](const auto &a, const auto &b) {
         return std::tie(a.second, a.first) < std::tie(b.second, b.first);
     });
 
     std::cout << "Getting data: ";
-    for (const auto &[sym, count] : pairs) {
+    for (const auto &[sym, count] : count_symbols) {
         std::cout << sym;
     }
     std::cout << '\n';

@@ -8,6 +8,6 @@ class Handler {
 public:
     Handler();
     
-    bool check(const std::string& data) const;
-    std::string process(const std::string& data) const;
+    bool check(const std::string &data) const;
+    std::string process(const std::string &data) const;
 };

@@ -3,7 +3,7 @@ project(client)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set (SRCS 
+set(SRCS 
     src/main.cpp
     src/client.cpp
     src/handler.cpp

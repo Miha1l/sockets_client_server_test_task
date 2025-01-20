@@ -3,7 +3,7 @@ project(server)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set (SRCS 
+set(SRCS 
     src/server.cpp
     src/main.cpp
 )
